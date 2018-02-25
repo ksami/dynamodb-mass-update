@@ -1,0 +1,23 @@
+version: '2.1'
+
+services:
+  dynamodb-mass-update:
+    build: .
+    depends_on:
+      - awslocal
+  awslocal:
+    image: localstack/localstack
+    ports:
+      - "4569:4569"
+      - "8080:8080"
+    environment:
+      - SERVICES=dynamodb:4569
+      - DEBUG=${DEBUG- }
+      - DATA_DIR=${DATA_DIR- }
+      - PORT_WEB_UI=${PORT_WEB_UI- }
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
